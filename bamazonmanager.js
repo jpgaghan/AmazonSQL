@@ -114,8 +114,33 @@ function addInventory() {
 }
 
 function addProduct() {
-    var post  = {product_name: 'Garden Soil', price: 3.99, department_name: 'outdoors', stock_quantity: 25};
+    inquirer.prompt([
+
+        {
+            type: "input",
+            name: "prodName",
+            message: "What's the new products name?"
+        },
+        {
+            type: "input",
+            name: "prodPrice",
+            message: "How much does it cost per unit?"
+        },
+        {
+            type: "input",
+            name: "prodDept",
+            message: "What department does it belong in?"
+        },
+        {
+            type: "input",
+            name: "prodQuant",
+            message: "How many are you stocking?"
+        },
+    ]).then(function (addition) {
+    var post  = {product_name: addition.prodName, price: parseFloat(addition.prodPrice).toFixed(2), department_name: addition.prodDept, stock_quantity: parseInt(addition.prodQuant)};
     var query = connection.query(
-        `INSERT INTO products SET ?`, post , function (error, results, fields) { console.log(``)});
-        
+        `INSERT INTO products SET ?`, post , function (error, results, fields) {
+            connection.end();
+        });
+    });
 }
