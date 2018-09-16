@@ -1,7 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var chalk = require("chalk");
-var {table} = require("table")
+var { table } = require("table")
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -37,7 +37,7 @@ function supervisorPrompt() {
                 productSales();
                 break;
             case `Create New Department`:
-                newDepartment();
+                addDepartment();
                 break;
         }
     })
@@ -54,12 +54,12 @@ function productSales() {
             deptArray = [];
             header = false;
             res.forEach(function (object) {
-                if (header ===false) {
+                if (header === false) {
                     for (var index in object) {
                         deptArray.push(index);
                     }
                     resArray.push(deptArray);
-                    deptArray=[];
+                    deptArray = [];
                     header = true;
                 }
                 for (var index in object) {
@@ -71,4 +71,27 @@ function productSales() {
             output = table(resArray);
             console.log(output);
         })
+    connection.end();
+};
+
+function addDepartment() {
+    inquirer.prompt([
+
+        {
+            type: "input",
+            name: "deptName",
+            message: "What's the new departments name?"
+        },
+        {
+            type: "input",
+            name: "overheadCost",
+            message: "What is the over head costs associated with this department?"
+        },
+    ]).then(function (addition) {
+        var post = { department_name: addition.deptName, over_head_costs: addition.costs };
+        var query = connection.query(
+            `INSERT INTO products SET ?`, post, function (error, results, fields) {
+                connection.end();
+            });
+    });
 };

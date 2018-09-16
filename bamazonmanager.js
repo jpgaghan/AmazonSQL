@@ -21,6 +21,7 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId + "\n");
     managerPrompt();
 });
+
 function managerPrompt() {
     inquirer.prompt([
         {
@@ -58,7 +59,6 @@ function queryDatabase() {
 };
 
 function querylowInventory() {
-    var parameter = "<=50";
     var query = connection.query(
         "SELECT * FROM products WHERE stock_quantity <=5",
         function (err, res) {
@@ -66,6 +66,7 @@ function querylowInventory() {
                 console.log(`Product ID: ${chalk.red(index.item_id)} Product Name: ${chalk.green(index.product_name)} Price: ${chalk.blue(index.price)} Stock: ${chalk.blue(index.stock_quantity)}`);
             });
         })
+    connection.end();
 };
 
 function addInventory() {
@@ -137,10 +138,10 @@ function addProduct() {
             message: "How many are you stocking?"
         },
     ]).then(function (addition) {
-    var post  = {product_name: addition.prodName, price: parseFloat(addition.prodPrice).toFixed(2), department_name: addition.prodDept, stock_quantity: parseInt(addition.prodQuant)};
-    var query = connection.query(
-        `INSERT INTO products SET ?`, post , function (error, results, fields) {
-            connection.end();
-        });
+        var post = { product_name: addition.prodName, price: parseFloat(addition.prodPrice).toFixed(2), department_name: addition.prodDept, stock_quantity: parseInt(addition.prodQuant) };
+        var query = connection.query(
+            `INSERT INTO products SET ?`, post, function (error, results, fields) {
+                connection.end();
+            });
     });
 }

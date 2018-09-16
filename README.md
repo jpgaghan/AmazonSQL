@@ -126,7 +126,7 @@ If you haven't written a markdown file yet, [click here for a rundown](https://g
 
 7. If you can't get the table to display properly after a few hours, then feel free to go back and just add `total_profit` to the `departments` table.
 
-   * Hint: You may need to look into aliases in MySQL.
+   * Hint: You may need to look in.
 
    * Hint: You may need to look into GROUP BYs.
 
