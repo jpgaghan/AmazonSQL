@@ -26,7 +26,9 @@ function queryDatabase() {
   var query = connection.query(
     "SELECT * FROM products",
     function(err, res) {
-      console.log(`Product ID: ${chalk.red(index.item_id)} Product Name: ${chalk.green(index.product_name)} Price: ${chalk.blue(index.price)} Stock: ${chalk.blue(index.stock_quantity)}`);
+      res.forEach(function (index) {
+        console.log(`Product ID: ${chalk.red(index.item_id)} Product Name: ${chalk.green(index.product_name)} Price: ${chalk.blue(index.price)} Stock: ${chalk.blue(index.stock_quantity)}`);
+    });
       orderPrompt();
     }
   );
@@ -63,7 +65,8 @@ function orderPrompt() {
             `UPDATE products SET ? Where ?`,
           [
             {
-              stock_quantity: results[0].stock_quantity - orderQuantity
+              stock_quantity: results[0].stock_quantity - orderQuantity,
+              product_sales: parseFloat(results[0].product_sales) + parseFloat(unitPrice*orderQuantity) 
             },
             {
               item_id: itemid
