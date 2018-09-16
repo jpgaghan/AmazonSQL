@@ -1,0 +1,94 @@
+var mysql = require("mysql");
+var inquirer = require("inquirer")
+var chalk = require("chalk")
+
+var connection = mysql.createConnection({
+  host: "localhost",
+
+  // Your port; if not 3306
+  port: 3306,
+
+  // Your username
+  user: "root",
+
+  // Your password
+  password: "root",
+  database: "bamazon"
+});
+
+connection.connect(function(err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId + "\n");
+  queryDatabase();
+});
+
+function queryDatabase() {
+  var query = connection.query(
+    "SELECT * FROM products",
+    function(err, res) {
+      console.log(`Product ID: ${chalk.red(index.item_id)} Product Name: ${chalk.green(index.product_name)} Price: ${chalk.blue(index.price)} Stock: ${chalk.blue(index.stock_quantity)}`);
+      orderPrompt();
+    }
+  );
+  // connection.end();
+}
+
+function orderPrompt() {
+  inquirer.prompt([
+
+  {
+    type: "input",
+    name: "productId",
+    message: "Input product ID you would like to purchase."
+  },
+  {
+    type: "input",
+    name: "quantity",
+    message: "How many would you like to purchase?"
+  },
+]).then(function(order) {
+  var orderQuantity = order.quantity;
+  var itemid = order.productId;
+  var query = connection.query(
+      `SELECT * FROM products WHERE ?`,
+    [
+      {
+        item_id: itemid
+      }
+    ],
+     function(error, results, field) {
+       var unitPrice = results[0].price;
+      if (orderQuantity <= results[0].stock_quantity) {
+        var query = connection.query(
+            `UPDATE products SET ? Where ?`,
+          [
+            {
+              stock_quantity: results[0].stock_quantity - orderQuantity
+            },
+            {
+              item_id: itemid
+            }
+          ],
+          function(error, results, field) {
+            console.log(`Your orders total cost is ${unitPrice*orderQuantity}`)
+            connection.end();
+      })} else {console.log('Insufficient Quantity!')
+      connection.end();}
+    });
+});
+}
+
+// function queryDatabase() {
+//   var query = connection.query(
+//     "SELECT * FROM products",
+//     // {
+//     //   flavor: "Rocky Road",
+//     //   price: 3.0,
+//     //   quantity: 50
+//     // },
+//     function(err, res) {
+//       console.log(res);
+//       // .affectedRows + " product inserted!\n"
+//       // Call updateProduct AFTER the INSERT completes
+//     }
+//   );
