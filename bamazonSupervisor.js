@@ -88,9 +88,9 @@ function addDepartment() {
             message: "What is the over head costs associated with this department?"
         },
     ]).then(function (addition) {
-        var post = { department_name: addition.deptName, over_head_costs: addition.costs };
+        var post = { department_name: addition.deptName, over_head_costs: addition.overheadCost };
         var query = connection.query(
-            `INSERT INTO products SET ?`, post, function (error, results, fields) {
+            `INSERT INTO departments SET ?`, post, function (error, results, fields) {
                 connection.end();
             });
     });
