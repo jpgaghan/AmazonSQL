@@ -1,3 +1,11 @@
+## Required NPM's
+**chalk**
+**inquirer**
+**table**
+**mysql**
+
+
+
 # Node.js & MySQL
 
 ## Overview
