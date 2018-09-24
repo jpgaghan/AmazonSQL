@@ -55,6 +55,8 @@ function queryDatabase() {
                 console.log(`Product ID: ${chalk.red(index.item_id)} Product Name: ${chalk.green(index.product_name)} Price: ${chalk.blue(index.price)} Stock: ${chalk.blue(index.stock_quantity)}`);
             });
         })
+    connection.end();
+
 };
 
 function querylowInventory() {
@@ -92,7 +94,6 @@ function addInventory() {
                 }
             ],
             function (error, results, field) {
-                console.log(results)
                 var currentQuantity = results[0].stock_quantity
                 var query = connection.query(
                     `UPDATE products SET ? WHERE ?`,
@@ -105,7 +106,7 @@ function addInventory() {
                         }
                     ],
                     function (error, results) {
-                        console.log(`${results.affectedRows}`)
+                        console.log(` You now have a total stock of ${parseInt(currentQuantity) + parseInt(addQuantity)} units for product ID ${itemid}`)
                         connection.end();
                     }
                 )
@@ -140,7 +141,8 @@ function addProduct() {
         var post = { product_name: addition.prodName, price: parseFloat(addition.prodPrice).toFixed(2), department_name: addition.prodDept, stock_quantity: parseInt(addition.prodQuant) };
         var query = connection.query(
             `INSERT INTO products SET ?`, post, function (error, results, fields) {
-                connection.end();
             });
+        console.log(`You have now added ${addition.prodQuant} units of ${addition.prodName} to the ${addition.prodDept} Department at the price of ${addition.prodPrice} per unit`)
+        connection.end();
     });
 }
